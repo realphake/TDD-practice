@@ -1,8 +1,8 @@
 import unittest
 
-class NotEnoughPins(Exception):
-    def __init__(self, value):
-        self.value = value
+class ImpossibleInput(Exception):
+    def __init__(self):
+        pass
     def __str__(self):
         return repr(self.value)
 
@@ -10,10 +10,27 @@ class BowlingGame():
 
     def __init__(self):
         self.allRolls = []
+        self.pinsStanding = 10
+        self.newFrame = True
+
+    def resetTheFrame(self):
+        self.pinsStanding = 10
+        self.newFrame = True
+
+    def isEndOfTheFrame(self):
+        return self.pinsStanding == 0 or not self.newFrame
+
+    def nonsensicalGameState(self):
+        return self.pinsStanding < 0 or self.pinsStanding > 10
 
     def roll(self, pins):
-        if pins > 10:
-            raise NotEnoughPins("")
+        self.pinsStanding -= pins
+        if self.nonsensicalGameState():
+            raise ImpossibleInput()
+        elif self.isEndOfTheFrame():
+            self.resetTheFrame()
+        else:
+            self.newFrame = False
         self.allRolls.append(pins)
 
     def isStrike(self, frameStart):
@@ -68,6 +85,10 @@ class testCalculator(unittest.TestCase) :
         self.rollBalls(20, 1)
         self.assertEqual(self.game.calculateScore(),20)
 
+    def testAllThrees(self):
+        self.rollBalls(20,3)
+        self.assertEqual(self.game.calculateScore(),60)
+
     def testOneSpare(self):
         self.rollBalls(2,5)
         self.rollBalls(1,7)
@@ -85,8 +106,17 @@ class testCalculator(unittest.TestCase) :
         self.assertEqual(self.game.calculateScore(),300)
 
     def testRollTooMany(self):
-        with self.assertRaises(NotEnoughPins):
+        with self.assertRaises(ImpossibleInput):
             self.game.roll(11)
+
+    def testRollTooManyInTwoRolls(self):
+        self.game.roll(4)
+        with self.assertRaises(ImpossibleInput):
+            self.game.roll(7)
+
+    def testRollLessThanZero(self):
+        with self.assertRaises(ImpossibleInput):
+            self.game.roll(-1)
 
 unittest.main()
 
