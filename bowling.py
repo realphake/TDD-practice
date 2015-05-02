@@ -1,16 +1,8 @@
 import unittest
 
-class ImpossibleInput(Exception):
-    def __init__(self):
-        pass
-    def __str__(self):
-        return repr(self.value)
+class ImpossibleInput(Exception): pass
 
-class GameNotComplete(Exception):
-    def __init__(self):
-        pass
-    def __str__(self):
-        return repr(self.value)
+class GameNotComplete(Exception): pass
 
 class BowlingGame():
 
@@ -75,7 +67,7 @@ class BowlingGame():
                 frameStart += 2
         return score
 
-class testCalculator(unittest.TestCase) :
+class testBowlingScore(unittest.TestCase) :
 
     def rollBalls(self, balls, pinsPerBall):
         for x in range(0,balls):
