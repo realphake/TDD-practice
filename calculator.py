@@ -1,24 +1,24 @@
 import unittest
 
 class StringCalculator():
-    
-    def __init__(self):
-        pass
 
-    def product(self,numbersToMultiply):
+    def product(self,listOfNumbers):
         product = 1
-        for number in numbersToMultiply:
+        for number in listOfNumbers:
             product *= number
         return product
 
+    def castAllToFloat(self, listOfNumbers):
+        return [self.calculate(n) for n in listOfNumbers]
+    
     def calculate(self, calculation):
         if "+" in calculation:
-            numbersToAdd = calculation.split("+")
-            return sum( [int(i) for i in numbersToAdd] )
+            listOfNumbers = calculation.split("+")
+            return sum( self.castAllToFloat(listOfNumbers) )
         if "*" in calculation:
-            numbersToMultiply = calculation.split("*")
-            return self.product([int(i) for i in numbersToMultiply])
-        return int(calculation)
+            listOfNumbers = calculation.split("*")
+            return self.product( self.castAllToFloat(listOfNumbers) )
+        return float(calculation)
 
 class testCalculator(unittest.TestCase):
 
@@ -31,7 +31,16 @@ class testCalculator(unittest.TestCase):
     def testAddition(self):
         self.assertEqual(self.calc.calculate("12+1+2"),15)
 
+    def testFloatCalling(self):
+        self.assertEqual(self.calc.calculate("3.8"),3.8)
+    
     def testMultiplication(self):
         self.assertEqual(self.calc.calculate("3*2*4"),24)
+
+    def testFloatingPointNumbers(self):
+        self.assertEqual(self.calc.calculate("3.8+2.3"),6.1)
+
+    def testMixedProblem(self):
+        self.assertEqual(self.calc.calculate("3+2*4"),11)
 
 unittest.main()
