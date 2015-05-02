@@ -20,12 +20,12 @@ class BowlingGame():
     def calculateScore(self):
         score = 0
         frameStart = 0
-        while frameStart < len(self.allRolls):
+        for frame in range(0,10):
             if self.isStrike(frameStart):
                 score += self.allRolls[frameStart]
                 score += self.scoreInFrame(frameStart+1)
                 frameStart += 1
-            if self.isSpare(frameStart):
+            elif self.isSpare(frameStart):
                 score += self.scoreInFrame(frameStart)
                 score += self.allRolls[frameStart+2]
                 frameStart += 2
@@ -62,6 +62,10 @@ class testCalculator(unittest.TestCase) :
         self.rollBalls(2,3)
         self.rollBalls(16,0)
         self.assertEqual(self.game.calculateScore(),22)
+
+    def testPerfectGame(self):
+        self.rollBalls(12,10)
+        self.assertEqual(self.game.calculateScore(),300)
 
 unittest.main()
 
