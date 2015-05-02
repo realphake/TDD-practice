@@ -6,16 +6,24 @@ class ImpossibleInput(Exception):
     def __str__(self):
         return repr(self.value)
 
+class GameNotComplete(Exception):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return repr(self.value)
+
 class BowlingGame():
 
     def __init__(self):
         self.allRolls = []
         self.pinsStanding = 10
         self.newFrame = True
+        self.completedFrames = 0
 
     def resetTheFrame(self):
         self.pinsStanding = 10
         self.newFrame = True
+        self.completedFrames += 1
 
     def isEndOfTheFrame(self):
         return self.pinsStanding == 0 or not self.newFrame
@@ -52,6 +60,8 @@ class BowlingGame():
         return self.allRolls[frameStart+1] + self.allRolls[frameStart+2]
 
     def calculateScore(self):
+        if self.completedFrames < 10:
+            raise GameNotComplete()
         score = 0
         frameStart = 0
         for frame in range(0,10):
@@ -85,6 +95,10 @@ class testCalculator(unittest.TestCase) :
         self.rollBalls(20, 1)
         self.assertEqual(self.game.calculateScore(),20)
 
+    def testTooManyFives(self):
+        self.rollBalls(50, 5)
+        self.assertEqual(self.game.calculateScore(),150)
+
     def testAllThrees(self):
         self.rollBalls(20,3)
         self.assertEqual(self.game.calculateScore(),60)
@@ -117,6 +131,11 @@ class testCalculator(unittest.TestCase) :
     def testRollLessThanZero(self):
         with self.assertRaises(ImpossibleInput):
             self.game.roll(-1)
+
+    def testBadScoreCall(self):
+        self.rollBalls(10,1)
+        with self.assertRaises(GameNotComplete):
+            self.assertEqual(self.game.calculateScore(),10)
 
 unittest.main()
 
