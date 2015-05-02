@@ -1,11 +1,19 @@
 import unittest
 
+class NotEnoughPins(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class BowlingGame():
 
     def __init__(self):
         self.allRolls = []
 
     def roll(self, pins):
+        if pins > 10:
+            raise NotEnoughPins("")
         self.allRolls.append(pins)
 
     def isStrike(self, frameStart):
@@ -75,6 +83,10 @@ class testCalculator(unittest.TestCase) :
     def testPerfectGame(self):
         self.rollBalls(12,10)
         self.assertEqual(self.game.calculateScore(),300)
+
+    def testRollTooMany(self):
+        with self.assertRaises(NotEnoughPins):
+            self.game.roll(11)
 
 unittest.main()
 
