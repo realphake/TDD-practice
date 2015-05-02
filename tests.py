@@ -8,17 +8,18 @@ class BowlingGame():
     def roll(self, pins):
         self.allRolls.append(pins)
 
+    def scoreInFrame(self, frameStart):
+        return self.allRolls[frameStart] + self.allRolls[frameStart+1]
+
+    def isSpare(self, frameStart):
+        return self.scoreInFrame(frameStart) >= 10
+
     def calculateScore(self):
         score = 0
-        i = 0
-        while i < len(self.allRolls):
-            frameScore = 0
-            frameScore += self.allRolls[i]
-            frameScore += self.allRolls[i+1]
-            if frameScore >= 10:
-                frameScore += self.allRolls[i+2]
-            i += 2
-            score += frameScore
+        for frameStart in range(0,len(self.allRolls),2):
+            score += self.scoreInFrame(frameStart)
+            if self.isSpare(frameStart):
+                score += self.allRolls[frameStart+2]
         return score
 
 class testCalculator(unittest.TestCase) :
