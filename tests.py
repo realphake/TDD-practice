@@ -9,7 +9,17 @@ class BowlingGame():
         self.allRolls.append(pins)
 
     def calculateScore(self):
-        return sum(self.allRolls)
+        score = 0
+        i = 0
+        while i < len(self.allRolls):
+            frameScore = 0
+            frameScore += self.allRolls[i]
+            frameScore += self.allRolls[i+1]
+            if frameScore >= 10:
+                frameScore += self.allRolls[i+2]
+            i += 2
+            score += frameScore
+        return score
 
 class testCalculator(unittest.TestCase) :
 
@@ -28,7 +38,6 @@ class testCalculator(unittest.TestCase) :
         self.rollBalls(20, 1)
         self.assertEqual(self.game.calculateScore(),20)
 
-    @unittest.skip("need a way to determine spares first")
     def testOneSpare(self):
         self.rollBalls(2,5)
         self.rollBalls(1,7)
