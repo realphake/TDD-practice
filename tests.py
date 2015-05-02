@@ -3,13 +3,13 @@ import unittest
 class BowlingGame():
 
     def __init__(self):
-        self.score = 0
+        self.allRolls = []
 
     def roll(self, pins):
-        self.score += pins
+        self.allRolls.append(pins)
 
     def calculateScore(self):
-        return self.score
+        return sum(self.allRolls)
 
 class testCalculator(unittest.TestCase) :
 
@@ -27,6 +27,13 @@ class testCalculator(unittest.TestCase) :
     def testAllOnes(self):
         self.rollBalls(20, 1)
         self.assertEqual(self.game.calculateScore(),20)
+
+    @unittest.skip("need a way to determine spares first")
+    def testOneSpare(self):
+        self.rollBalls(2,5)
+        self.rollBalls(1,7)
+        self.rollBalls(17,0)
+        self.assertEqual(self.game.calculateScore(),24)
 
 unittest.main()
 
