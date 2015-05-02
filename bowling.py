@@ -53,11 +53,10 @@ class BowlingGame():
     def isSpare(self, frameStart):
         return self.scoreInFrame(frameStart) >= 10
 
-    def nextRollForSpare(self, frameStart):
-        return self.allRolls[frameStart+2]
-
-    def nextTwoRollsForStrike(self, frameStart):
-        return self.allRolls[frameStart+1] + self.allRolls[frameStart+2]
+    def nextRolls(self,frameStart,number):
+        if len(self.allRolls) < frameStart+number:
+            raise GameNotComplete()
+        return sum(self.allRolls[frameStart:frameStart+number])
 
     def calculateScore(self):
         if self.completedFrames < 10:
@@ -66,15 +65,13 @@ class BowlingGame():
         frameStart = 0
         for frame in range(0,10):
             if self.isStrike(frameStart):
-                score += self.scoreInFrame(frameStart)
-                score += self.nextTwoRollsForStrike(frameStart)
+                score += self.nextRolls(frameStart,3)
                 frameStart += 1
             elif self.isSpare(frameStart):
-                score += self.scoreInFrame(frameStart)
-                score += self.nextRollForSpare(frameStart)
+                score += self.nextRolls(frameStart,3)
                 frameStart += 2
             else:
-                score += self.scoreInFrame(frameStart)
+                score += self.nextRolls(frameStart,2)
                 frameStart += 2
         return score
 
@@ -135,7 +132,19 @@ class testCalculator(unittest.TestCase) :
     def testBadScoreCall(self):
         self.rollBalls(10,1)
         with self.assertRaises(GameNotComplete):
-            self.assertEqual(self.game.calculateScore(),10)
+            self.game.calculateScore()
+
+    def testBadScoreCallAfterStrike(self):
+        self.rollBalls(18,0)
+        self.rollBalls(1,10)
+        with self.assertRaises(GameNotComplete):
+            self.game.calculateScore()
+
+    def testBadScoreCallAfterSpare(self):
+        self.rollBalls(18,0)
+        self.rollBalls(2,5)
+        with self.assertRaises(GameNotComplete):
+            self.game.calculateScore()
 
 unittest.main()
 
