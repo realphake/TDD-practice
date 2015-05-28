@@ -9,6 +9,8 @@ class fizzBuzzPrinter():
     def print(self, number):
         if number == 3:
             return "Fizz"
+        elif number == 5:
+            return "Buzz"
         else:
             return str(number)
 
@@ -25,6 +27,9 @@ class testSuite(unittest.TestCase):
 
     def testPrintThreeAsFizz(self):
         self.assertEqual(self.fizzBuzzPrinter.print(3),"Fizz")
+
+    def testPrintFive(self):
+        self.assertEqual(self.fizzBuzzPrinter.print(5),"Buzz")
 
 unittest.main()
 
