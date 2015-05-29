@@ -5,8 +5,8 @@ class testSuite(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testNothing(self):
-        pass
+    def testTautology(self):
+        self.assertEqual(True,True)
 
 unittest.main()
 
